@@ -1,6 +1,6 @@
 # Antares TOM Broker Module
 
-This module adds an [Antares](https://antares.noao.edu/) support to the TOM
+This module adds [Antares](https://antares.noao.edu/) support to the TOM
 Toolkit. Using this module TOMs can query and listen to Antares streams.
 
 ## Installation:
