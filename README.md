@@ -18,7 +18,7 @@ Add `tom_antares.antares.AntaresBroker` to the `TOM_ALERT_CLASSES` in your TOM's
         'tom_antares.antares.AntaresBroker'
     ]
 
-You'll need Anatares credentials to use this plugin. You can register for an account [here](https://antares.noao.edu/accounts/register/). Add your Antares credentials to your project
+You'll need Antares credentials to use this plugin. You can register for an account [here](https://antares.noao.edu/accounts/register/). Add your Antares credentials to your project
 's `settings.py`:
 
     BROKER_CREDENTIALS = {
