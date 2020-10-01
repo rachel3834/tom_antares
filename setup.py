@@ -27,8 +27,8 @@ setup(
     keywords=['tomtoolkit', 'astronomy', 'astrophysics', 'cosmology', 'science', 'fits', 'observatory', 'antares'],
     packages=find_packages(),
     install_requires=[
-        'tomtoolkit',
-        'antares-client',
+        'tomtoolkit==1.11.1',
+        'antares-client==1.0.1',
     ],
     include_package_data=True,
 )
