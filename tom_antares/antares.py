@@ -37,6 +37,10 @@ class AntaresBrokerForm(GenericQueryForm):
     # TODO: allow multiple selection of streams
     stream = forms.ChoiceField(choices=get_stream_choices)
 
+    # TODO: add section for searching API in addition to consuming stream
+
+    # TODO: add layout
+
 
 class AntaresBroker(GenericBroker):
     name = 'Antares'
@@ -88,6 +92,7 @@ class AntaresBroker(GenericBroker):
         alert = get_by_ztf_object_id(id)
         return alert
 
+    # TODO: This function
     def process_reduced_data(self, target, alert=None):
         pass
 
