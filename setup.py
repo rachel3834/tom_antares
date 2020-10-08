@@ -27,8 +27,12 @@ setup(
     keywords=['tomtoolkit', 'astronomy', 'astrophysics', 'cosmology', 'science', 'fits', 'observatory', 'antares'],
     packages=find_packages(),
     install_requires=[
-        'tomtoolkit==1.11.1',
-        'antares-client==1.0.1',
+        'tomtoolkit==1.13.0a3',
+        'antares-client~=1.0.1',
+        'elasticsearch-dsl~=7.3.0'
     ],
+    extras_require={
+        'test': ['factory_boy~=3.1.0']
+    },
     include_package_data=True,
 )

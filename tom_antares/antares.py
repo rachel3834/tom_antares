@@ -34,8 +34,9 @@ def get_stream_choices():
 
 
 class AntaresBrokerForm(GenericQueryForm):
-    # TODO: allow multiple selection of streams
-    stream = forms.ChoiceField(choices=get_stream_choices)
+    stream = forms.MultipleChoiceField(choices=get_stream_choices)
+    # cone_search = ConeSearchField()
+    # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
 
     # TODO: add section for searching API in addition to consuming stream
 
@@ -62,11 +63,11 @@ class AntaresBroker(GenericBroker):
     def fetch_alerts(self, parameters):
         print(f'parameters: {parameters}')
         stream = parameters['stream']
-        client = StreamingClient([stream], **self.config)
+        client = StreamingClient(stream, **self.config)
         alert_stream = client.iter(20)
         alerts = []
         # TODO: Add timeout in case there aren't alerts
-        while len(alerts) < 5:  # TODO: change this back to 20
+        while len(alerts) < 20:  # TODO: change this back to 20
             try:
                 alert = next(alert_stream)
             except (AntaresException, marshmallow.exceptions.ValidationError):
