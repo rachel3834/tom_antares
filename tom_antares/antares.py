@@ -1,3 +1,4 @@
+import copy
 import logging
 import requests
 
@@ -5,6 +6,7 @@ from antares_client import StreamingClient
 from antares_client.exceptions import AntaresException
 from antares_client.search import get_by_ztf_object_id
 from astropy.time import Time, TimezoneInfo
+from crispy_forms.layout import Fieldset, HTML, Layout
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -28,9 +30,48 @@ def get_available_streams(url=ANTARES_TAG_URL):
     return streams
 
 
+# def get_tag_choices():
+#     tags = get_available_streams()
+#     return [(s['id'], s['id']) for s in tags]
+
+
 def get_stream_choices():
     streams = get_available_streams()
     return [(s['id'] + '_staging', s['id']) for s in streams]
+
+
+# class ConeSearchWidget(forms.widgets.MultiWidget):
+
+#     def __init__(self, attrs=None):
+#         if not attrs:
+#             attrs = {}
+#         _default_attrs = {'class': 'form-control col-md-4', 'style': 'display: inline-block'}
+#         attrs.update(_default_attrs)
+#         print(attrs)
+#         ra_attrs.update({'placeholder': 'Right Ascension'})
+#         print(ra_attrs)
+
+#         _widgets = (
+#             forms.widgets.NumberInput(attrs=ra_attrs),
+#             forms.widgets.NumberInput(attrs=attrs.update({'placeholder': 'Declination'})),
+#             forms.widgets.NumberInput(attrs=attrs.update({'placeholder': 'Radius (degrees)'}))
+#         )
+
+#         super().__init__(_widgets, attrs)
+
+#     def decompress(self, value):
+#         return [value.ra, value.dec, value.radius] if value else [None, None, None]
+
+
+# class ConeSearchField(forms.MultiValueField):
+#     widget = ConeSearchWidget
+
+#     def __init__(self, *args, **kwargs):
+#         fields = (forms.FloatField(), forms.FloatField(), forms.FloatField())
+#         super().__init__(fields=fields, *args, **kwargs)
+
+#     def compress(self, data_list):
+#         return data_list
 
 
 class AntaresBrokerForm(GenericQueryForm):
@@ -39,8 +80,28 @@ class AntaresBrokerForm(GenericQueryForm):
     # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
 
     # TODO: add section for searching API in addition to consuming stream
+    # TODO: write tests
 
     # TODO: add layout
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.layout = Layout(
+            self.common_layout,
+            Fieldset(
+                'View Streams',
+                'stream'
+            ),
+            # HTML('<hr/>'),
+            # Fieldset(
+            #     'Cone Search',
+            #     'cone_search'
+            # ),
+            # HTML('<hr/>'),
+            # Fieldset(
+            #     'API Search',
+            #     'api_search_tags'
+            # )
+        )
 
 
 class AntaresBroker(GenericBroker):
@@ -61,7 +122,6 @@ class AntaresBroker(GenericBroker):
             raise ImproperlyConfigured('Missing ANTARES API credentials')
 
     def fetch_alerts(self, parameters):
-        print(f'parameters: {parameters}')
         stream = parameters['stream']
         client = StreamingClient(stream, **self.config)
         alert_stream = client.iter(20)
