@@ -4,7 +4,7 @@ from unittest import mock
 from antares_client._api.models import Alert, Locus
 
 #from tom_antares.antares import get_available_streams, get_stream_choices, AntaresBrokerForm, AntaresBroker
-#from tom_antares.tests.factories import AlertFactory, LocusFactory
+from tom_antares.tests.factories import AlertFactory, LocusFactory
 #from tom_alerts.alerts import get_service_class, get_service_classes
 from tom_targets.models import Target
 #from tom_dataproducts.models import ReducedDatum

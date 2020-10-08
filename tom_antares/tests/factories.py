@@ -10,10 +10,10 @@ class AlertFactory(factory.Factory):
     alert_id = factory.Faker('pystr')  # sample value: ztf_upper_limit:ZTF20achooum-1372493490015
     mjd = factory.Faker('pyfloat', min_value=58000, max_value=63000)  # sample value: 59126.493495400064
     properties = factory.Dict({
-         'ztf_jd': factory.Faker('pyfloat', min_value=2458000, max_value=2463000) # sample value: 2459126.9934954,
-         'ztf_fid': factory.Faker('pyint', min_value=1, max_value=3)  # sample value: 1,
-         'ztf_pid': factory.Faker('pyint', min_value=1000000000000, max_value=9999999999999) # sample value: 1372493490015,
-         'ztf_diffmaglim': factory.Faker('pyfloat', min_value=15, max_value=23) # sample value: 19.29050064086914,
+         'ztf_jd': factory.Faker('pyfloat', min_value=2458000, max_value=2463000), # sample value: 2459126.9934954,
+         'ztf_fid': factory.Faker('pyint', min_value=1, max_value=3),  # sample value: 1,
+         'ztf_pid': factory.Faker('pyint', min_value=1000000000000, max_value=9999999999999), # sample value: 1372493490015,
+         'ztf_diffmaglim': factory.Faker('pyfloat', min_value=15, max_value=23), # sample value: 19.29050064086914,
          # NOTE: the remaining properties are unused by our code
          # 'ztf_pdiffimfilename':  # sample value: '/ztf/archive/sci/2020/1004/493495/ztf_20201004493495_000817_zg_c01_o_q1_scimrefdiffimg.fits.fz',
          # 'ztf_programpi':  # sample value: 'Kulkarni',

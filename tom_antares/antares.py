@@ -123,13 +123,13 @@ class AntaresBroker(GenericBroker):
 
     def fetch_alerts(self, parameters):
         stream = parameters['stream']
-        client = StreamingClient(stream, **self.config)
-        alert_stream = client.iter(20)
+        client = StreamingClient(stream, **self.config)  # TODO: may need to be mocked in unit tests
+        alert_stream = client.iter(20)  # TODO: needs to be mocked in unit tests
         alerts = []
         # TODO: Add timeout in case there aren't alerts
-        while len(alerts) < 20:  # TODO: change this back to 20
+        while len(alerts) < 20:
             try:
-                alert = next(alert_stream)
+                alert = next(alert_stream)  # An alert is a 2-tuple of (tag, Locus)
             except (AntaresException, marshmallow.exceptions.ValidationError):
                 break
             serialized_alert = {
@@ -166,7 +166,7 @@ class AntaresBroker(GenericBroker):
             ra=alert['ra'],
             dec=alert['dec'],
         )
-        if alert['properties'].get('horizons_targetname'):
+        if alert['properties'].get('horizons_targetname'):  # TODO: review if any other target names need to be created
             TargetName.objects.create(target=target, name=alert['properties'].get('horizons_targetname'))
         return target
 
