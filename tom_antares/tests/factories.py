@@ -42,7 +42,34 @@ class LocusFactory(factory.Factory):
     Creates a test version of a Locus object
 
     Requires a list of alerts as a kwarg
+
+    Example Locus:
+
+    locus = Locus(locus_id='ANT2020aeczfyy', ra=159.6231717, dec=59.839694,
+                  properties={'ztf_object_id': 'ZTF20achooum',
+                          'ztf_ssnamenr': 'null',
+                          'num_alerts': 3,
+                          'num_mag_values': 1,
+                          'oldest_alert_id': 'ztf_candidate:1375506740015015002',
+                          'oldest_alert_magnitude': 18.615400314331055,
+                          'oldest_alert_observation_time': 59129.50674769981,
+                          'newest_alert_id': 'ztf_candidate:1375506740015015002',
+                          'newest_alert_magnitude': 18.615400314331055,
+                          'newest_alert_observation_time': 59129.50674769981,
+                          'brightest_alert_id': 'ztf_candidate:1375506740015015002',
+                          'brightest_alert_magnitude': 18.615400314331055,
+                          'brightest_alert_observation_time': 59129.50674769981},
+                  tags=['in_m31'],
+                  alerts=[
+                    Alert(alert_id='ztf_upper_limit:ZTF20achooum-1372493490015',
+                          mjd=59126.493495400064,
+                          properties={},)
+                  ]
+                )
     """
+    class Meta:
+        model = Locus
+
     @classmethod
     def create(cls, **kwargs):
         if not kwargs.get('alerts'):
@@ -50,14 +77,12 @@ class LocusFactory(factory.Factory):
             kwargs.update({'alerts': alerts})
         return super().create(**kwargs)
 
-    class Meta:
-        model = Locus
-
     locus_id = factory.Faker('pystr')  # sample value: 'ANT2020aeczfyy'
     ra = factory.Faker('pyfloat')  # sample value: 159.6231717
     dec = factory.Faker('pyfloat')  # sample value: 59.839694
     properties = factory.Dict({
         'ztf_object_id': factory.Faker('pystr')  # sample value: 'ZTF20achooum',
+        # NOTE: the remaining properties are unused by our code
         # 'ztf_ssnamenr':  # sample value: 'null',
         # 'num_alerts':  # sample value: 3,
         # 'num_mag_values':  # sample value: 1,

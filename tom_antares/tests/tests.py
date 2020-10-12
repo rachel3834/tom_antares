@@ -8,29 +8,6 @@ from tom_antares.tests.factories import LocusFactory
 from tom_targets.models import Target, TargetName
 
 
-# locus = Locus(locus_id='ANT2020aeczfyy', ra=159.6231717, dec=59.839694,
-#               properties={'ztf_object_id': 'ZTF20achooum',
-#                           'ztf_ssnamenr': 'null',
-#                           'num_alerts': 3,
-#                           'num_mag_values': 1,
-#                           'oldest_alert_id': 'ztf_candidate:1375506740015015002',
-#                           'oldest_alert_magnitude': 18.615400314331055,
-#                           'oldest_alert_observation_time': 59129.50674769981,
-#                           'newest_alert_id': 'ztf_candidate:1375506740015015002',
-#                           'newest_alert_magnitude': 18.615400314331055,
-#                           'newest_alert_observation_time': 59129.50674769981,
-#                           'brightest_alert_id': 'ztf_candidate:1375506740015015002',
-#                           'brightest_alert_magnitude': 18.615400314331055,
-#                           'brightest_alert_observation_time': 59129.50674769981},
-#               tags=['in_m31'],
-#               alerts=[
-#                   # TODO: yikes!
-#                   Alert(alert_id='ztf_upper_limit:ZTF20achooum-1372493490015',
-#                         mjd=59126.493495400064,
-#                         properties={},)
-#               ]
-#             )
-
 @override_settings(BROKER_CREDENTIALS={'antares': {'api_key': '', 'api_secret': ''}})
 class TestANTARESBrokerClass(TestCase):
     """
@@ -56,7 +33,7 @@ class TestANTARESBrokerClass(TestCase):
         # NOTE: if .side_effect is going to return a list, it needs a function that returns a list
         mock_client.iter.side_effect = lambda loci: iter([(self.topic, locus) for locus in self.loci])
 
-        expected_alert = ANTARESBroker.alert_to_dict(self.loci[0])       
+        expected_alert = ANTARESBroker.alert_to_dict(self.locus)
         alerts = ANTARESBroker().fetch_alerts({'stream': [self.topic]})
 
         # TODO: compare iterator length with len(self.loci)
@@ -72,16 +49,16 @@ class TestANTARESBrokerClass(TestCase):
         This test should create two TargetName objects: one for the ANTARES name,
         and one for the horizons_targetname.
         """
-        self.loci[0].properties['horizons_targetname'] = 'test targetname'
-        alert = (self.topic, ANTARESBroker.alert_to_dict(self.loci[0]))
+        self.locus.properties['horizons_targetname'] = 'test targetname'
+        alert = (self.topic, ANTARESBroker.alert_to_dict(self.locus))
         _ = ANTARESBroker().to_target(alert)
 
         self.assertEqual(TargetName.objects.all().count(), 2)
 
     def test_to_generic_alert(self):
-        self.loci[0].properties['newest_alert_observation_time'] = 59134  # 10/12/2020
-        generic_alert = ANTARESBroker().to_generic_alert((self.topic, ANTARESBroker.alert_to_dict(self.loci[0])))
+        self.locus.properties['newest_alert_observation_time'] = 59134  # 10/12/2020
+        generic_alert = ANTARESBroker().to_generic_alert((self.topic, ANTARESBroker.alert_to_dict(self.locus)))
 
         # NOTE: The string is hardcoded as a sanity check to ensure that the string is reviewed if it changes
-        self.assertEqual(generic_alert.url, f'https://antares.noirlab.edu/loci/{self.loci[0].locus_id}')
+        self.assertEqual(generic_alert.url, f'https://antares.noirlab.edu/loci/{self.locus.locus_id}')
         self.assertEqual(generic_alert.timestamp, datetime(2020, 10, 12, tzinfo=timezone.utc))
