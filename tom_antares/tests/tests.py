@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from unittest import mock
 
 from antares_client._api.models import Alert, Locus
@@ -8,8 +9,6 @@ from tom_antares.tests.factories import AlertFactory, LocusFactory
 #from tom_alerts.alerts import get_service_class, get_service_classes
 from tom_targets.models import Target
 #from tom_dataproducts.models import ReducedDatum
-
-
 
 
 # locus = Locus(locus_id='ANT2020aeczfyy', ra=159.6231717, dec=59.839694,
@@ -37,15 +36,24 @@ from tom_targets.models import Target
 
 
 class TestAntaresBrokerClass(TestCase):
+    """
+    NOTE: to run these tests in your venv: ./tom_antares/tests/run_tests.py
+    """
+
     def setUp(self):
         self.test_target = Target.objects.create(name='ZTF20achooum')
+
         #self.Locus = LocusFactory.create()
         #print(self.Locus)
         #print(self.Locus.alerts)
 
-    def test_test(self):
+    def test_boilerplate(self):
+        """make sure the testing infrastruction is working"""
         self.assertTrue(True)
 
+    def test_to_target(self):
+        self.assertTrue(True)
 
-# if __name__ == '__main__':
-#     unittest.main()
+    def test_to_generic_alert(self):
+        self.assertTrue(True)
+
