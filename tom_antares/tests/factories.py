@@ -1,6 +1,7 @@
 import factory
 
 from antares_client._api.models import Alert, Locus
+from pandas.core.frame import DataFrame
 
 
 class AlertFactory(factory.Factory):
@@ -37,6 +38,18 @@ class AlertFactory(factory.Factory):
 
 
 class LocusFactory(factory.Factory):
+    """
+    Creates a test version of a Locus object
+
+    Requires a list of alerts as a kwarg
+    """
+    @classmethod
+    def create(cls, **kwargs):
+        if not kwargs.get('alerts'):
+            alerts = [AlertFactory.create() for i in range(0, 5)]
+            kwargs.update({'alerts': alerts})
+        return super().create(**kwargs)
+
     class Meta:
         model = Locus
 
@@ -44,7 +57,7 @@ class LocusFactory(factory.Factory):
     ra = factory.Faker('pyfloat')  # sample value: 159.6231717
     dec = factory.Faker('pyfloat')  # sample value: 59.839694
     properties = factory.Dict({
-        # 'ztf_object_id':  # sample value: 'ZTF20achooum',
+        'ztf_object_id': factory.Faker('pystr')  # sample value: 'ZTF20achooum',
         # 'ztf_ssnamenr':  # sample value: 'null',
         # 'num_alerts':  # sample value: 3,
         # 'num_mag_values':  # sample value: 1,
@@ -59,8 +72,7 @@ class LocusFactory(factory.Factory):
         # 'brightest_alert_observation_time':  # sample value: 59129.50674769981
     })
     tags = factory.List([])
-    # lightcurve = factory.
-    alerts = factory.RelatedFactoryList(AlertFactory, factory_related_name='alert', size=5)
+    lightcurve = DataFrame()
     catalogs = factory.List([])
     # catalog_objects = factory.List([])
     # watch_list_ids = factory.List([])

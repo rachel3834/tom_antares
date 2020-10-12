@@ -74,7 +74,7 @@ def get_stream_choices():
 #         return data_list
 
 
-class AntaresBrokerForm(GenericQueryForm):
+class ANTARESBrokerForm(GenericQueryForm):
     stream = forms.MultipleChoiceField(choices=get_stream_choices)
     # cone_search = ConeSearchField()
     # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
@@ -104,9 +104,9 @@ class AntaresBrokerForm(GenericQueryForm):
         )
 
 
-class AntaresBroker(GenericBroker):
-    name = 'Antares'
-    form = AntaresBrokerForm
+class ANTARESBroker(GenericBroker):
+    name = 'ANTARES'
+    form = ANTARESBrokerForm
 
     def __init__(self, *args, **kwargs):
         try:
@@ -121,7 +121,30 @@ class AntaresBroker(GenericBroker):
         except KeyError:
             raise ImproperlyConfigured('Missing ANTARES API credentials')
 
-    def fetch_alerts(self, parameters):
+    @classmethod
+    def alert_to_dict(cls, locus):
+        """
+        Note: The ANTARES stream returns a Locus object, which in the TOM Toolkit
+        would otherwise be called an alert.
+
+        This method serializes the Locus into a dict so that it can be cached by the view.
+        """
+        return {
+            'locus_id': locus.locus_id,
+            'ra': locus.ra,
+            'dec': locus.dec,
+            'properties': locus.properties,
+            'tags': locus.tags,
+            'lightcurve': locus.lightcurve.to_json(),
+            'catalogs': locus.catalogs,
+            'alerts': [{
+                'alert_id': alert.alert_id,
+                'mjd': alert.mjd,
+                'properties': alert.properties
+            } for alert in locus.alerts]
+        }
+
+    def fetch_alerts(self, parameters: dict) -> iter:
         stream = parameters['stream']
         client = StreamingClient(stream, **self.config)  # TODO: may need to be mocked in unit tests
         alert_stream = client.iter(20)  # TODO: needs to be mocked in unit tests
@@ -129,24 +152,11 @@ class AntaresBroker(GenericBroker):
         # TODO: Add timeout in case there aren't alerts
         while len(alerts) < 20:
             try:
-                alert = next(alert_stream)  # An alert is a 2-tuple of (tag, Locus)
-            except (AntaresException, marshmallow.exceptions.ValidationError):
+                topic, locus = next(alert_stream)  # An alert is a 2-tuple of (tag, Locus)
+            except (AntaresException, marshmallow.exceptions.ValidationError, StopIteration):
                 break
-            serialized_alert = {
-                'locus_id': alert[1].locus_id,
-                'ra': alert[1].ra,
-                'dec': alert[1].dec,
-                'properties': alert[1].properties,
-                'tags': alert[1].tags,
-                'lightcurve': alert[1].lightcurve.to_json(),
-                'catalogs': alert[1].catalogs,
-                'alerts': [{
-                    'alert_id': alert.alert_id,
-                    'mjd': alert.mjd,
-                    'properties': alert.properties} for alert in alert[1].alerts]
-            }
-            alert = (alert[0], serialized_alert)
-            alerts.append(alert)
+            alert_as_dict = self.alert_to_dict(locus)
+            alerts.append((topic, alert_as_dict))
         return iter(alerts)
 
     def fetch_alert(self, id):
@@ -157,15 +167,15 @@ class AntaresBroker(GenericBroker):
     def process_reduced_data(self, target, alert=None):
         pass
 
-    def to_target(self, alert):
+    def to_target(self, alert: dict) -> Target:
         _, alert = alert
         target = Target.objects.create(
-            identifier=alert['locus_id'],
             name=alert['properties']['ztf_object_id'],
             type='SIDEREAL',
             ra=alert['ra'],
             dec=alert['dec'],
         )
+        TargetName.objects.create(target=target, name=alert['locus_id'])
         if alert['properties'].get('horizons_targetname'):  # TODO: review if any other target names need to be created
             TargetName.objects.create(target=target, name=alert['properties'].get('horizons_targetname'))
         return target
