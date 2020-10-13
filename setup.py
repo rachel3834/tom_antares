@@ -7,13 +7,13 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='tom-antares',
-    version='0.1.0',
+    version='1.0.1',
     description='Antares broker module for the TOM Toolkit',
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://tomtoolkit.github.io',
     author='TOM Toolkit Project',
-    author_email='ariba@lco.global',
+    author_email='dcollom@lco.global',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
