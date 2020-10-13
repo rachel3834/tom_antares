@@ -27,3 +27,9 @@ You'll need Antares credentials to use this plugin. You can register for an acco
             'api_secret': 'YOUR ANTARES API SECRET'
         }
     }
+
+## Running the tests
+
+In order to run the tests, run the following in your virtualenv:
+
+`python tom_antares/tests/run_tests.py`
