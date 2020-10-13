@@ -117,6 +117,8 @@ class ANTARESBroker(GenericBroker):
             }
             if antares_creds.get('group'):  # Group should only be set if it exists, otherwise Antares manages it
                 self.config['group'] = antares_creds['group']
+            if antares_creds.get('ssl_ca_location'):
+                self.config['ssl_ca_location'] = antares_creds['ssl_ca_location']
 
         except KeyError:
             raise ImproperlyConfigured('Missing ANTARES API credentials')
