@@ -171,16 +171,17 @@ class ANTARESBroker(GenericBroker):
 
     def to_target(self, alert: dict) -> Target:
         _, alert = alert
-        target = Target.objects.create(
+        target = Target(
             name=alert['properties']['ztf_object_id'],
             type='SIDEREAL',
             ra=alert['ra'],
             dec=alert['dec'],
         )
-        TargetName.objects.create(target=target, name=alert['locus_id'])
+        antares_name = TargetName(target=target, name=alert['locus_id'])
+        aliases = [antares_name]
         if alert['properties'].get('horizons_targetname'):  # TODO: review if any other target names need to be created
-            TargetName.objects.create(target=target, name=alert['properties'].get('horizons_targetname'))
-        return target
+            aliases.append(TargetName(name=alert['properties'].get('horizons_targetname')))
+        return target, [], aliases
 
     def to_generic_alert(self, alert):
         _, alert = alert
