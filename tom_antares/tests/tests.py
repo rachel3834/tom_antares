@@ -8,7 +8,7 @@ from tom_antares.tests.factories import LocusFactory
 from tom_targets.models import Target, TargetName
 
 
-@override_settings(BROKER_CREDENTIALS={'antares': {'api_key': '', 'api_secret': ''}})
+@override_settings(BROKERS={'antares': {'api_key': '', 'api_secret': ''}})
 class TestANTARESBrokerClass(TestCase):
     """
     NOTE: to run these tests in your venv: python ./tom_antares/tests/run_tests.py

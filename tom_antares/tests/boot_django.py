@@ -31,5 +31,11 @@ def boot_django():
         EXTRA_FIELDS={},
         TIME_ZONE='UTC',
         USE_TZ=True,
+        BROKERS={
+            'anatares': {
+                'api_key': os.getenv('ANTARES_API_KEY', ''),
+                'api_secret': os.getenv('ANTARES_API_SECRET', ''),
+            }
+        }
     )
     django.setup()

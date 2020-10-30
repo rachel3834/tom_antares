@@ -109,7 +109,7 @@ class ANTARESBroker(GenericBroker):
 
     def __init__(self, *args, **kwargs):
         try:
-            antares_creds = settings.BROKER_CREDENTIALS['antares']
+            antares_creds = settings.BROKERS['antares']
             self.config = {
                 'api_key': antares_creds['api_key'],
                 'api_secret': antares_creds['api_secret']
