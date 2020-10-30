@@ -8,7 +8,7 @@ class TestANTARESModuleCanary(TestCase):
     """NOTE: To run these tests in your venv: python ./tom_scimma/tests/run_tests.py"""
 
     def setUp(self):
-        self.broker = SCIMMABroker()
+        self.broker = ANTARESBroker()
 
     def test_boilerplate(self):
         self.assertTrue(True)

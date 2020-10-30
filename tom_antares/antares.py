@@ -1,4 +1,3 @@
-import copy
 import logging
 import requests
 
@@ -6,7 +5,7 @@ from antares_client import StreamingClient
 from antares_client.exceptions import AntaresException
 from antares_client.search import get_by_ztf_object_id
 from astropy.time import Time, TimezoneInfo
-from crispy_forms.layout import Fieldset, HTML, Layout
+from crispy_forms.layout import Fieldset, Layout
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
