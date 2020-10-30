@@ -13,7 +13,7 @@ Add `tom_antares.antares.AntaresBroker` to the `TOM_ALERT_CLASSES` in your TOM's
 `settings.py`:
 
     TOM_ALERT_CLASSES = [
-        'tom_alerts.brokers.mars.MARSBroker'
+        'tom_alerts.brokers.mars.MARSBroker',
         ...
         'tom_antares.antares.AntaresBroker'
     ]

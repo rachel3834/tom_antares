@@ -80,7 +80,6 @@ class ANTARESBrokerForm(GenericQueryForm):
     # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
 
     # TODO: add section for searching API in addition to consuming stream
-    # TODO: write tests
 
     # TODO: add layout
     def __init__(self, *args, **kwargs):
