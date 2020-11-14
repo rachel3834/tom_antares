@@ -23,8 +23,11 @@ def boot_django():
             }
         },
         INSTALLED_APPS=(
+            'django.contrib.auth',
+            'django.contrib.contenttypes',
             'django_extensions',
             'tom_targets',
+            'tom_observations',
             'tom_alerts',
             APP_NAME,  # defined above
         ),
