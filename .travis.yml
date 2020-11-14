@@ -23,6 +23,8 @@ stages:
 - "Style Checks"
 - "test"
 - "Canary Tests"
+- "Deploy Dev"
+- Deploy Main
 
 jobs:
   include:
@@ -35,3 +37,76 @@ jobs:
     if: type = cron
     script: python tom_antares/tests/run_canary_tests.py
     
+  - stage: "Deploy Dev"
+    if:
+    - tag IS present
+    - type != cron
+    script: skip
+    deploy:
+      provider: pypi
+      skip_existing: true
+      cleanup: false
+      on:
+        branch: dev
+        tags: true
+        condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+\-(alpha)\.[0-9]+$
+      username: "__token__"
+      password:
+         secure: "rm49DiKk9F0bsTFeoE9S5ROPDWYPkl3LMprGdZhP8n8uEKtBEqYj8mdiM34pQ8MirzMgoPp1lsjpfUJspQlpMnRjqmlnh9PSMev05wMMFo7ivo0s4MJjLj4+LVE8x1fpnT2q6PZ0vbkTn7fpQ+gmGhfQDgoTJI1rNa78hAaE5jGtRhzFttLqV5AUyXFZbMftcKkUTtZQG54wZqdrUz5i2nwD7s5CxWH4K8qSj2y+Z1epxNKtOASaOFMyqpWgmpBkVKMhbvHCfVfdhbGyh/V4JMxP/imLXAUaLR+1BzkfvwSnXGnLNWLTZssRxwPn4vjeHrn3vLBomR8TnXNlLxdd0lDkZXQTdXacu92w1Du0fD+fC8jn1uCqtFXX/ry4nGWCIbJK1pje+tkwSWJVwDF8q9GzDtnMtbaLlScDQ5qI+PhUcnPrXK4UXnK/W55Dkud9unrz/pyt2q/G2+UVX/EfezhMbSAi6CF9Fqv8XaLvyd5JSfWW86RSrJ+akSY+QHHnpV3qu2mDUmFdfjpdOHniURufosyc0qN03+R+AJpMWKVxs8W/QVtW6GpH3c1X+xLlbgAOSUPXsZ4k4tATYaiv7KBRa8IwE/tjlWv8j5nl/ztIXK/1Rtq3EfLQlXZUwm1YaMv2jAxUPj5E/sEy8x0bweLGTSlquqT2HDqp7meHtnA="
+      distributions: "sdist bdist_wheel"
+
+  - stage: "Deploy Dev"
+    if:
+    - tag IS present
+    - type != cron
+    python: 3.8
+    script: skip
+    deploy:
+      provider: releases
+      token:
+        secure: "V5t/Rk0jK6ggR6Oc2sk6Kr8+mC4vcKD4Vh1/CVhFoB+/QJTJR4wR1ZzdmxSTHVqyYRWMhtbQg4GEenVu3CCE6Aqcpb8FuXagBGDjrydYMvBz0QV0tGpc0QfAGFgihoMxRXYYy8x0qJoImpIgweIcBP6qCIbWlHNn7uSbJgQAcpHI1KP5//SJbiZ5+h1tYa3AImfhuRIjtw5X5XCkbNe04DpJZZrR7et4BnZwjBKmkPBHAoDhfuGzA5PF1S6jHCpWIddhRQ60v6T7yp8jcBEn5yvQSmusfUju61GI0+irFV8LksaWMaLFkxdR2ne8DtHGuXoRs8G/hOLlYZGBMM/JkV2VcuX9F61vspQW2bDrNgAzMEHknYKeTamvt5HV+zYly7X/OnBMAdbDl3ZOjP5h7zYjdeDza+t6dG1+iJKfCjz5dekT20NDVlwJvIMGhqxNOxDRfnlHopoTT/16/Jd7SPDOY2gpDoZxA8uPGZJR52y6T8tZqrR/tamoXRZk5WR4zeIW2rFK85hZwmz59dWQywlhzcIxMHhBcH6r6O3p1NwFA1LPIzgEQHKig/5DxFk52reU70fA9L2nZ1AHSES2RtG9kDQZLx7gbnOaOGx7Jbd6mECFMzliEBKiSnYxN404bNVAoTBEwcuxTho9zJRccQVeIdTD617K4sAqPWWhFwk="
+      on:
+        branch: dev
+        tags: true
+      file_glob: true
+      file: dist/*
+      cleanup: false
+      draft: true
+      prerelease: true
+
+  - stage: Deploy Main
+    if:
+    - tag IS present
+    - type != cron
+    python: 3.8
+    script: skip
+    deploy:
+      provider: pypi
+      skip_existing: true
+      cleanup: false
+      on:
+        branch: main
+        tags: true
+        condition: $TRAVIS_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+$
+      username: "__token__"
+      password:
+        secure: "rm49DiKk9F0bsTFeoE9S5ROPDWYPkl3LMprGdZhP8n8uEKtBEqYj8mdiM34pQ8MirzMgoPp1lsjpfUJspQlpMnRjqmlnh9PSMev05wMMFo7ivo0s4MJjLj4+LVE8x1fpnT2q6PZ0vbkTn7fpQ+gmGhfQDgoTJI1rNa78hAaE5jGtRhzFttLqV5AUyXFZbMftcKkUTtZQG54wZqdrUz5i2nwD7s5CxWH4K8qSj2y+Z1epxNKtOASaOFMyqpWgmpBkVKMhbvHCfVfdhbGyh/V4JMxP/imLXAUaLR+1BzkfvwSnXGnLNWLTZssRxwPn4vjeHrn3vLBomR8TnXNlLxdd0lDkZXQTdXacu92w1Du0fD+fC8jn1uCqtFXX/ry4nGWCIbJK1pje+tkwSWJVwDF8q9GzDtnMtbaLlScDQ5qI+PhUcnPrXK4UXnK/W55Dkud9unrz/pyt2q/G2+UVX/EfezhMbSAi6CF9Fqv8XaLvyd5JSfWW86RSrJ+akSY+QHHnpV3qu2mDUmFdfjpdOHniURufosyc0qN03+R+AJpMWKVxs8W/QVtW6GpH3c1X+xLlbgAOSUPXsZ4k4tATYaiv7KBRa8IwE/tjlWv8j5nl/ztIXK/1Rtq3EfLQlXZUwm1YaMv2jAxUPj5E/sEy8x0bweLGTSlquqT2HDqp7meHtnA="
+      distributions: "sdist bdist_wheel"
+
+  - stage: Deploy Main
+    if:
+    - tag IS present
+    - type != cron
+    python: 3.8
+    script: skip
+    deploy:
+      provider: releases
+      token:
+        secure: "V5t/Rk0jK6ggR6Oc2sk6Kr8+mC4vcKD4Vh1/CVhFoB+/QJTJR4wR1ZzdmxSTHVqyYRWMhtbQg4GEenVu3CCE6Aqcpb8FuXagBGDjrydYMvBz0QV0tGpc0QfAGFgihoMxRXYYy8x0qJoImpIgweIcBP6qCIbWlHNn7uSbJgQAcpHI1KP5//SJbiZ5+h1tYa3AImfhuRIjtw5X5XCkbNe04DpJZZrR7et4BnZwjBKmkPBHAoDhfuGzA5PF1S6jHCpWIddhRQ60v6T7yp8jcBEn5yvQSmusfUju61GI0+irFV8LksaWMaLFkxdR2ne8DtHGuXoRs8G/hOLlYZGBMM/JkV2VcuX9F61vspQW2bDrNgAzMEHknYKeTamvt5HV+zYly7X/OnBMAdbDl3ZOjP5h7zYjdeDza+t6dG1+iJKfCjz5dekT20NDVlwJvIMGhqxNOxDRfnlHopoTT/16/Jd7SPDOY2gpDoZxA8uPGZJR52y6T8tZqrR/tamoXRZk5WR4zeIW2rFK85hZwmz59dWQywlhzcIxMHhBcH6r6O3p1NwFA1LPIzgEQHKig/5DxFk52reU70fA9L2nZ1AHSES2RtG9kDQZLx7gbnOaOGx7Jbd6mECFMzliEBKiSnYxN404bNVAoTBEwcuxTho9zJRccQVeIdTD617K4sAqPWWhFwk="
+      on:
+        branch: main
+        tags: true
+      file_glob: true
+      file: dist/*
+      cleanup: false
+      draft: true
