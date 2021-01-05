@@ -18,16 +18,6 @@ Add `tom_antares.antares.AntaresBroker` to the `TOM_ALERT_CLASSES` in your TOM's
         'tom_antares.antares.ANTARESBroker'
     ]
 
-You'll need Antares credentials to use this plugin. You can register for an account [here](https://antares.noao.edu/accounts/register/). Add your Antares credentials to your project
-'s `settings.py`:
-
-    BROKERS = {
-        'anatares': {
-            'api_key': 'YOUR ANTARES API KEY',
-            'api_secret': 'YOUR ANTARES API SECRET'
-        }
-    }
-
 ## Running the tests
 
 In order to run the tests, run the following in your virtualenv:
