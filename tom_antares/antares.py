@@ -120,8 +120,7 @@ class ANTARESBroker(GenericBroker):
                 'alert_id': alert.alert_id,
                 'mjd': alert.mjd,
                 'properties': alert.properties
-            }
-            for alert in locus.alerts]
+            } for alert in locus.alerts]
         }
 
     def fetch_alerts(self, parameters: dict) -> iter:
