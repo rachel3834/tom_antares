@@ -15,18 +15,8 @@ Add `tom_antares.antares.AntaresBroker` to the `TOM_ALERT_CLASSES` in your TOM's
     TOM_ALERT_CLASSES = [
         'tom_alerts.brokers.mars.MARSBroker',
         ...
-        'tom_antares.antares.AntaresBroker'
+        'tom_antares.antares.ANTARESBroker'
     ]
-
-You'll need Antares credentials to use this plugin. You can register for an account [here](https://antares.noao.edu/accounts/register/). Add your Antares credentials to your project
-'s `settings.py`:
-
-    BROKERS = {
-        'anatares': {
-            'api_key': 'YOUR ANTARES API KEY',
-            'api_secret': 'YOUR ANTARES API SECRET'
-        }
-    }
 
 ## Running the tests
 
