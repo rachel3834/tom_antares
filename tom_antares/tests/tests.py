@@ -48,9 +48,10 @@ class TestANTARESBrokerClass(TestCase):
         """
         self.locus.properties['horizons_targetname'] = 'test targetname'
         alert = ANTARESBroker.alert_to_dict(self.locus)
-        _ = ANTARESBroker().to_target(alert)
+        print(alert)
+        _, _, aliases = ANTARESBroker().to_target(alert)
 
-        self.assertEqual(TargetName.objects.all().count(), 2)
+        self.assertEqual(len(aliases), 2)
 
     def test_to_generic_alert(self):
         self.locus.properties['newest_alert_observation_time'] = 59134  # 10/12/2020
