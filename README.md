@@ -7,7 +7,7 @@
 This module adds [Antares](https://antares.noao.edu/) support to the TOM
 Toolkit. Using this module TOMs can query and listen to Antares streams.
 
-## Installation:
+## Installation
 
 Install the module into your TOM environment:
 
