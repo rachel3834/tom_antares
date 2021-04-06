@@ -23,13 +23,22 @@ def boot_django():
             }
         },
         INSTALLED_APPS=(
+            'django.contrib.auth',
+            'django.contrib.contenttypes',
             'django_extensions',
             'tom_targets',
+            'tom_observations',
             'tom_alerts',
             APP_NAME,  # defined above
         ),
         EXTRA_FIELDS={},
         TIME_ZONE='UTC',
         USE_TZ=True,
+        BROKERS={
+            'anatares': {
+                'api_key': os.getenv('ANTARES_API_KEY', ''),
+                'api_secret': os.getenv('ANTARES_API_SECRET', ''),
+            }
+        }
     )
     django.setup()

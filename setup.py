@@ -7,7 +7,6 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='tom-antares',
-    version='1.0.2',
     description='Antares broker module for the TOM Toolkit',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -26,13 +25,15 @@ setup(
     ],
     keywords=['tomtoolkit', 'astronomy', 'astrophysics', 'cosmology', 'science', 'fits', 'observatory', 'antares'],
     packages=find_packages(),
+    use_scm_version=True,  # use_scm_version and setup_requires setuptools_scm are required for automated releases
+    setup_requires=['setuptools_scm', 'wheel'],
     install_requires=[
-        'tomtoolkit==1.13.0a3',
-        'antares-client~=1.0.1',
+        'tomtoolkit==2.2.0',
+        'antares-client~=1.0.4',
         'elasticsearch-dsl~=7.3.0'
     ],
     extras_require={
-        'test': ['factory_boy~=3.1.0']
+        'test': ['factory_boy>=3.1,<3.3']
     },
     include_package_data=True,
 )

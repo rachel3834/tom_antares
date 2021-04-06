@@ -1,12 +1,10 @@
-import copy
 import logging
 import requests
 
-from antares_client import StreamingClient
-from antares_client.exceptions import AntaresException
+import antares_client
 from antares_client.search import get_by_ztf_object_id
 from astropy.time import Time, TimezoneInfo
-from crispy_forms.layout import Fieldset, HTML, Layout
+from crispy_forms.layout import Fieldset, Layout
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -22,22 +20,17 @@ ANTARES_API_URL = 'https://api.antares.noirlab.edu'
 ANTARES_TAG_URL = ANTARES_API_URL + '/v1/tags'
 
 
-def get_available_streams(url=ANTARES_TAG_URL):
+def get_available_tags(url: str = ANTARES_TAG_URL):
     response = requests.get(url).json()
-    streams = response.get('data', {})
+    tags = response.get('data', {})
     if response.get('links', {}).get('next'):
-        return streams + get_available_streams(response['links']['next'])
-    return streams
+        return tags + get_available_tags(response['links']['next'])
+    return tags
 
 
-# def get_tag_choices():
-#     tags = get_available_streams()
-#     return [(s['id'], s['id']) for s in tags]
-
-
-def get_stream_choices():
-    streams = get_available_streams()
-    return [(s['id'] + '_staging', s['id']) for s in streams]
+def get_tag_choices():
+    tags = get_available_tags()
+    return [(s['id'], s['id']) for s in tags]
 
 
 # class ConeSearchWidget(forms.widgets.MultiWidget):
@@ -75,12 +68,11 @@ def get_stream_choices():
 
 
 class ANTARESBrokerForm(GenericQueryForm):
-    stream = forms.MultipleChoiceField(choices=get_stream_choices)
+    tag = forms.MultipleChoiceField(choices=get_tag_choices)
     # cone_search = ConeSearchField()
     # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
 
     # TODO: add section for searching API in addition to consuming stream
-    # TODO: write tests
 
     # TODO: add layout
     def __init__(self, *args, **kwargs):
@@ -88,8 +80,8 @@ class ANTARESBrokerForm(GenericQueryForm):
         self.helper.layout = Layout(
             self.common_layout,
             Fieldset(
-                'View Streams',
-                'stream'
+                'View Tags',
+                'tag'
             ),
             # HTML('<hr/>'),
             # Fieldset(
@@ -108,25 +100,10 @@ class ANTARESBroker(GenericBroker):
     name = 'ANTARES'
     form = ANTARESBrokerForm
 
-    def __init__(self, *args, **kwargs):
-        try:
-            antares_creds = settings.BROKER_CREDENTIALS['antares']
-            self.config = {
-                'api_key': antares_creds['api_key'],
-                'api_secret': antares_creds['api_secret']
-            }
-            if antares_creds.get('group'):  # Group should only be set if it exists, otherwise Antares manages it
-                self.config['group'] = antares_creds['group']
-            if antares_creds.get('ssl_ca_location'):
-                self.config['ssl_ca_location'] = antares_creds['ssl_ca_location']
-
-        except KeyError:
-            raise ImproperlyConfigured('Missing ANTARES API credentials')
-
     @classmethod
     def alert_to_dict(cls, locus):
         """
-        Note: The ANTARES stream returns a Locus object, which in the TOM Toolkit
+        Note: The ANTARES API returns a Locus object, which in the TOM Toolkit
         would otherwise be called an alert.
 
         This method serializes the Locus into a dict so that it can be cached by the view.
@@ -137,7 +114,7 @@ class ANTARESBroker(GenericBroker):
             'dec': locus.dec,
             'properties': locus.properties,
             'tags': locus.tags,
-            'lightcurve': locus.lightcurve.to_json(),
+            # 'lightcurve': locus.lightcurve.to_json(),
             'catalogs': locus.catalogs,
             'alerts': [{
                 'alert_id': alert.alert_id,
@@ -147,18 +124,26 @@ class ANTARESBroker(GenericBroker):
         }
 
     def fetch_alerts(self, parameters: dict) -> iter:
-        stream = parameters['stream']
-        client = StreamingClient(stream, **self.config)  # TODO: may need to be mocked in unit tests
-        alert_stream = client.iter(20)  # TODO: needs to be mocked in unit tests
+        tags = parameters['tag']
+        query = {
+            "query": {
+                "bool": {
+                    "filter": {
+                        "terms": {
+                            "tags": tags,
+                        }
+                    }
+                }
+            }
+        }
+        loci = antares_client.search.search(query)
         alerts = []
-        # TODO: Add timeout in case there aren't alerts
         while len(alerts) < 20:
             try:
-                topic, locus = next(alert_stream)  # An alert is a 2-tuple of (tag, Locus)
-            except (AntaresException, marshmallow.exceptions.ValidationError, StopIteration):
+                locus = next(loci)
+            except (marshmallow.exceptions.ValidationError, StopIteration):
                 break
-            alert_as_dict = self.alert_to_dict(locus)
-            alerts.append((topic, alert_as_dict))
+            alerts.append(self.alert_to_dict(locus))
         return iter(alerts)
 
     def fetch_alert(self, id):
@@ -170,8 +155,7 @@ class ANTARESBroker(GenericBroker):
         pass
 
     def to_target(self, alert: dict) -> Target:
-        _, alert = alert
-        target = Target(
+        target = Target.objects.create(
             name=alert['properties']['ztf_object_id'],
             type='SIDEREAL',
             ra=alert['ra'],
@@ -184,7 +168,6 @@ class ANTARESBroker(GenericBroker):
         return target, [], aliases
 
     def to_generic_alert(self, alert):
-        _, alert = alert
         url = f"{ANTARES_BASE_URL}/loci/{alert['locus_id']}"
         timestamp = Time(
             alert['properties'].get('newest_alert_observation_time'), format='mjd', scale='utc'
