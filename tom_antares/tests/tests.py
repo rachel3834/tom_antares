@@ -9,9 +9,7 @@ from tom_targets.models import Target
 
 
 class TestANTARESBrokerClass(TestCase):
-    """
-    NOTE: to run these tests in your venv: python ./tom_antares/tests/run_tests.py
-    """
+    """NOTE: to run these tests in your venv: python ./tom_antares/tests/run_tests.py"""
 
     def setUp(self):
         self.test_target = Target.objects.create(name='ZTF20achooum')
@@ -20,14 +18,12 @@ class TestANTARESBrokerClass(TestCase):
         self.tag = 'in_m31'
 
     def test_boilerplate(self):
-        """make sure the testing infrastructure is working"""
+        """Ensure the testing infrastructure is working."""
         self.assertTrue(True)
 
     @mock.patch('tom_antares.antares.antares_client')
     def test_fetch_alerts(self, mock_client):
-        """
-        Test the ANTARES-specific fetch_alerts logic.
-        """
+        """Test the ANTARES-specific fetch_alerts logic."""
         # NOTE: if .side_effect is going to return a list, it needs a function that returns a list
         mock_client.search.search.side_effect = lambda loci: iter(self.loci)
         expected_alert = ANTARESBroker.alert_to_dict(self.locus)
@@ -48,7 +44,6 @@ class TestANTARESBrokerClass(TestCase):
         """
         self.locus.properties['horizons_targetname'] = 'test targetname'
         alert = ANTARESBroker.alert_to_dict(self.locus)
-        print(alert)
         _, _, aliases = ANTARESBroker().to_target(alert)
 
         self.assertEqual(len(aliases), 2)
