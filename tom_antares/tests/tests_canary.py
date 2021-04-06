@@ -14,13 +14,13 @@ class TestANTARESModuleCanary(TestCase):
         self.assertTrue(True)
 
     def test_fetch_alerts(self):
-        """Test fetch_alerts"""
+        """Test fetch_alerts."""
         pass
 
     def test_fetch_alert(self):
-        """Test fetch_alert"""
+        """Test fetch_alert."""
         pass
 
     def test_submit_upstream_alert(self):
-        """Test submit_upstream_alert"""
+        """Test submit_upstream_alert."""
         pass

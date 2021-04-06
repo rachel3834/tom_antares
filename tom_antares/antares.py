@@ -6,8 +6,6 @@ from antares_client.search import get_by_ztf_object_id
 from astropy.time import Time, TimezoneInfo
 from crispy_forms.layout import Fieldset, Layout
 from django import forms
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 import marshmallow
 
 from tom_alerts.alerts import GenericBroker, GenericQueryForm, GenericAlert
@@ -161,10 +159,11 @@ class ANTARESBroker(GenericBroker):
             ra=alert['ra'],
             dec=alert['dec'],
         )
-        TargetName.objects.create(target=target, name=alert['locus_id'])
+        antares_name = TargetName(target=target, name=alert['locus_id'])
+        aliases = [antares_name]
         if alert['properties'].get('horizons_targetname'):  # TODO: review if any other target names need to be created
-            TargetName.objects.create(target=target, name=alert['properties'].get('horizons_targetname'))
-        return target
+            aliases.append(TargetName(name=alert['properties'].get('horizons_targetname')))
+        return target, [], aliases
 
     def to_generic_alert(self, alert):
         url = f"{ANTARES_BASE_URL}/loci/{alert['locus_id']}"

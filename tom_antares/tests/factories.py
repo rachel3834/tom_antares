@@ -5,6 +5,7 @@ from pandas.core.frame import DataFrame
 
 
 class AlertFactory(factory.Factory):
+    """Creates a test version of an Alert object."""
     class Meta:
         model = Alert
 
@@ -40,8 +41,7 @@ class AlertFactory(factory.Factory):
 
 
 class LocusFactory(factory.Factory):
-    """
-    Creates a test version of a Locus object
+    """Creates a test version of a Locus object
 
     Requires a list of alerts as a kwarg
 
