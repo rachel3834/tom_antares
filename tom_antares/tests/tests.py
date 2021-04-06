@@ -1,11 +1,11 @@
 from datetime import datetime, timezone
 
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from unittest import mock
 
 from tom_antares.antares import ANTARESBroker
 from tom_antares.tests.factories import LocusFactory
-from tom_targets.models import Target, TargetName
+from tom_targets.models import Target
 
 
 class TestANTARESBrokerClass(TestCase):

@@ -6,8 +6,6 @@ from antares_client.search import get_by_ztf_object_id
 from astropy.time import Time, TimezoneInfo
 from crispy_forms.layout import Fieldset, Layout
 from django import forms
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 import marshmallow
 
 from tom_alerts.alerts import GenericBroker, GenericQueryForm, GenericAlert
