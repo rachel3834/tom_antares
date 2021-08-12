@@ -336,7 +336,7 @@ class ANTARESBroker(GenericBroker):
             query = elsquery
         else:
             filters = []
-        
+
         if nobs_gt or nobs_lt:
             nobs_range = {'range': {'properties.num_mag_values': {}}}
             if nobs_gt:
@@ -344,11 +344,11 @@ class ANTARESBroker(GenericBroker):
             if nobs_lt:
                 nobs_range['range']['properties.num_mag_values']['lte'] = nobs_lt
             filters.append(nobs_range)
-        
+
         if mjd_lt:
             mjd_lt_range = {'range': {'properties.newest_alert_observation_time': {'lte': mjd_lt}}}
             filters.append(mjd_lt_range)
-        
+
         if mjd_gt:
             mjd_gt_range = {'range': {'properties.oldest_alert_observation_time': {'gte': mjd_gt}}}
             filters.append(mjd_gt_range)
