@@ -66,13 +66,13 @@ def get_tag_choices():
 
 
 class ANTARESBrokerForm(GenericQueryForm):
-    #define form content
+    # define form content
     ztfid = forms.CharField(
         required=False,
         label='',
         widget=forms.TextInput(attrs={'placeholder': 'ZTF object id, e.g. ZTF19aapreis'})
         )
-    tag = forms.MultipleChoiceField(required=False,choices=get_tag_choices)
+    tag = forms.MultipleChoiceField(required=False, choices=get_tag_choices)
     nobs__gt = forms.IntegerField(
         required=False,
         label='Detections Lower',
@@ -131,7 +131,6 @@ class ANTARESBrokerForm(GenericQueryForm):
         widget=forms.TextInput(attrs={'placeholder': '{"query":{}}'}),
     )
 
-
     # cone_search = ConeSearchField()
     # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
 
@@ -144,7 +143,7 @@ class ANTARESBrokerForm(GenericQueryForm):
             self.common_layout,
             HTML('''
                 <p>
-                Users can query objects in the ANTARES database using one of the following 
+                Users can query objects in the ANTARES database using one of the following
                 three methods: 1. an object ID by ZTF, 2. a simple query form with constraints
                 of object brightness, position, and associated tag, 3. an advanced query with
                 Elastic Search syntax.
@@ -197,8 +196,8 @@ class ANTARESBrokerForm(GenericQueryForm):
                         'mag__max',
                         css_class='col',
                     ),
-                  css_class='form-row'
-               )
+                    css_class='form-row'
+                )
             ),
             Fieldset(
                 'Cone Search',
@@ -230,8 +229,8 @@ class ANTARESBrokerForm(GenericQueryForm):
             ),
             HTML('''
                 <p>
-                Please see <a href="https://noao.gitlab.io/antares/client/tutorial/searching.html">ANTARES Documentation</a>
-                for a detailed description of advanced searches.
+                Please see <a href="https://noao.gitlab.io/antares/client/tutorial/searching.html">ANTARES
+                 Documentation</a> for a detailed description of advanced searches.
                 </p>
             ''')
             # HTML('<hr/>'),
@@ -247,7 +246,7 @@ class ANTARESBrokerForm(GenericQueryForm):
         # Ensure all cone search fields are present
         if any(cleaned_data[k] for k in ['ra', 'dec', 'sr']) and not all(cleaned_data[k] for k in ['ra', 'dec', 'sr']):
             raise forms.ValidationError('All of RA, Dec, and Search Radius must be included to perform a cone search.')
-        #default value for cone search
+        # default value for cone search
         if not all(cleaned_data[k] for k in ['ra', 'dec', 'sr']):
             cleaned_data['ra'] = 180.
             cleaned_data['dec'] = 0.
@@ -257,20 +256,24 @@ class ANTARESBrokerForm(GenericQueryForm):
             raise forms.ValidationError('Min date of alert detection must be earlier than max date of alert detection.')
 
         # Ensure number of measurement constraints have sensible values
-        if all(cleaned_data[k] for k in ['nobs__lt', 'nobs__gt']) and cleaned_data['nobs__lt'] <= cleaned_data['nobs__gt']:
+        if (all(cleaned_data[k] for k in ['nobs__lt', 'nobs__gt'])
+                and cleaned_data['nobs__lt'] <= cleaned_data['nobs__gt']):
             raise forms.ValidationError('Min number of measurements must be smaller than max number of measurements.')
 
         # Ensure magnitude constraints have sensible values
-        if all(cleaned_data[k] for k in ['mag__min', 'mag__max']) and cleaned_data['mag__max'] <= cleaned_data['mag__min']:
+        if (all(cleaned_data[k] for k in ['mag__min', 'mag__max'])
+                and cleaned_data['mag__max'] <= cleaned_data['mag__min']):
             raise forms.ValidationError('Min magnitude must be smaller than max magnitude.')
 
-#        # Ensure using either a stream or the advanced search form
-#        if not (cleaned_data['tag'] or cleaned_data['esquery']):
-#            raise forms.ValidationError('Please either select tag(s) or use the advanced search query.')
+        # Ensure using either a stream or the advanced search form
+        # if not (cleaned_data['tag'] or cleaned_data['esquery']):
+        #    raise forms.ValidationError('Please either select tag(s) or use the advanced search query.')
 
         # Ensure using either a stream or the advanced search form
         if not (cleaned_data['ztfid'] or cleaned_data['tag'] or cleaned_data['esquery']):
-            raise forms.ValidationError('Please either enter the ZTF ID, or select tag(s), or use the advanced search query.')
+            raise forms.ValidationError(
+                'Please either enter the ZTF ID, or select tag(s), or use the advanced search query.'
+            )
 
         return cleaned_data
 
@@ -317,11 +320,11 @@ class ANTARESBroker(GenericBroker):
         ztfid = parameters['ztfid']
         if ztfid:
             query = {
-                "query":{
-                    "bool":{
-                        "must":[
+                "query": {
+                    "bool": {
+                        "must": [
                             {
-                                "match":{
+                                "match": {
                                     "properties.ztf_object_id": ztfid
                                 }
                             }
@@ -335,7 +338,7 @@ class ANTARESBroker(GenericBroker):
             query = {
                 "query": {
                     "bool": {
-                        "filter":[
+                        "filter": [
                             {
                                 "range": {
                                     "properties.num_mag_values": {
