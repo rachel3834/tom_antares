@@ -337,48 +337,48 @@ class ANTARESBroker(GenericBroker):
         else:
             filters = []
 
-        if nobs_gt or nobs_lt:
-            nobs_range = {'range': {'properties.num_mag_values': {}}}
-            if nobs_gt:
-                nobs_range['range']['properties.num_mag_values']['gte'] = nobs_gt
-            if nobs_lt:
-                nobs_range['range']['properties.num_mag_values']['lte'] = nobs_lt
-            filters.append(nobs_range)
+            if nobs_gt or nobs_lt:
+                nobs_range = {'range': {'properties.num_mag_values': {}}}
+                if nobs_gt:
+                    nobs_range['range']['properties.num_mag_values']['gte'] = nobs_gt
+                if nobs_lt:
+                    nobs_range['range']['properties.num_mag_values']['lte'] = nobs_lt
+                filters.append(nobs_range)
 
-        if mjd_lt:
-            mjd_lt_range = {'range': {'properties.newest_alert_observation_time': {'lte': mjd_lt}}}
-            filters.append(mjd_lt_range)
+            if mjd_lt:
+                mjd_lt_range = {'range': {'properties.newest_alert_observation_time': {'lte': mjd_lt}}}
+                filters.append(mjd_lt_range)
 
-        if mjd_gt:
-            mjd_gt_range = {'range': {'properties.oldest_alert_observation_time': {'gte': mjd_gt}}}
-            filters.append(mjd_gt_range)
+            if mjd_gt:
+                mjd_gt_range = {'range': {'properties.oldest_alert_observation_time': {'gte': mjd_gt}}}
+                filters.append(mjd_gt_range)
 
-        if mag_min or mag_max:
-            mag_range = {'range': {'properties.newest_alert_magnitude': {}}}
-            if mag_min:
-                mag_range['range']['properties.newest_alert_magnitude']['gte'] = mag_min
-            if mag_max:
-                mag_range['range']['properties.newest_alert_magnitude']['lte'] = mag_max
-            filters.append(mag_range)
+            if mag_min or mag_max:
+                mag_range = {'range': {'properties.newest_alert_magnitude': {}}}
+                if mag_min:
+                    mag_range['range']['properties.newest_alert_magnitude']['gte'] = mag_min
+                if mag_max:
+                    mag_range['range']['properties.newest_alert_magnitude']['lte'] = mag_max
+                filters.append(mag_range)
 
-        if sra and ssr:  # TODO: add cross-field validation
-            ra_range = {'range': {'ra': {'gte': sra-ssr, 'lte': sra+ssr}}}
-            filters.append(ra_range)
+            if sra and ssr:  # TODO: add cross-field validation
+                ra_range = {'range': {'ra': {'gte': sra-ssr, 'lte': sra+ssr}}}
+                filters.append(ra_range)
 
-        if sdec and ssr:  # TODO: add cross-field validation
-            dec_range = {'range': {'dec': {'gte': sdec-ssr, 'lte': sdec+ssr}}}
-            filters.append(dec_range)
+            if sdec and ssr:  # TODO: add cross-field validation
+                dec_range = {'range': {'dec': {'gte': sdec-ssr, 'lte': sdec+ssr}}}
+                filters.append(dec_range)
 
-        if tags:
-            filters.append({'terms': {'tags': tags}})
+            if tags:
+                filters.append({'terms': {'tags': tags}})
 
-        query = {
-                "query": {
-                    "bool": {
-                        "filter": filters
+            query = {
+                    "query": {
+                        "bool": {
+                            "filter": filters
+                        }
                     }
                 }
-            }
 
         loci = antares_client.search.search(query)
 #        if ztfid:
