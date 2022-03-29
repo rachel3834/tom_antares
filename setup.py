@@ -12,14 +12,14 @@ setup(
     long_description_content_type='text/markdown',
     url='https://tomtoolkit.github.io',
     author='TOM Toolkit Project',
-    author_email='dcollom@lco.global',
+    author_email='llindstrom@lco.global',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Scientific/Engineering :: Astronomy',
         'Topic :: Scientific/Engineering :: Physics'
     ],
@@ -28,7 +28,7 @@ setup(
     use_scm_version=True,  # use_scm_version and setup_requires setuptools_scm are required for automated releases
     setup_requires=['setuptools_scm', 'wheel'],
     install_requires=[
-        'tomtoolkit~=2.7.0',
+        'tomtoolkit~=2.10.0',
         'antares-client~=1.0',
         'elasticsearch-dsl~=7.3.0'
     ],
