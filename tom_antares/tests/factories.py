@@ -1,6 +1,6 @@
 import factory
 
-from antares_client._api.models import Alert, Locus
+from antares_client.models import Alert, Locus
 from pandas.core.frame import DataFrame
 
 
