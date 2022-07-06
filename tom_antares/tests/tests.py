@@ -31,10 +31,10 @@ class TestANTARESBrokerClass(TestCase):
 
         # TODO: compare iterator length with len(self.loci)
         self.assertEqual(next(alerts), expected_alert)
-    
+
     @mock.patch('tom_antares.antares.antares_client')
     def test_fetch_alerts_max_alerts(self, mock_client):
-        '''Tests that the max_alerts parameter actually affects the length of the alert stream'''
+        """Tests that the max_alerts parameter actually affects the length of the alert stream"""
         mock_client.search.search.side_effect = lambda loci: iter(self.loci)
         alerts = ANTARESBroker().fetch_alerts({'max_alerts': 4})
         self.assertEqual(len(list(alerts)), 4)
