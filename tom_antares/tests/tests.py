@@ -39,7 +39,6 @@ class TestANTARESBrokerClass(TestCase):
         alerts = ANTARESBroker().fetch_alerts({'max_alerts': 4})
         self.assertEqual(len(list(alerts)), 4)
 
-
     def test_to_target_with_horizons_targetname(self):
         """
         Test that the expected names are created.
