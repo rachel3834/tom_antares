@@ -132,10 +132,10 @@ class ANTARESBrokerForm(GenericQueryForm):
     )
     max_alerts = forms.FloatField(
         required=False,
-        label = 'Maximum number of alerts to fetch',
+        label='Maximum number of alerts to fetch',
         widget=forms.TextInput(attrs={'placeholder': 'Max Alerts'}),
         min_value=0.0,
-        initial = 50
+        initial=50
     )
 
     # cone_search = ConeSearchField()
