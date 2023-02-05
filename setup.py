@@ -12,7 +12,7 @@ setup(
     long_description_content_type='text/markdown',
     url='https://tomtoolkit.github.io',
     author='TOM Toolkit Project',
-    author_email='llindstrom@lco.global',
+    author_email='llindstrom@lco.global, dmcollom@gmail.com',
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Science/Research',
