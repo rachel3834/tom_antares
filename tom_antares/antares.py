@@ -130,6 +130,13 @@ class ANTARESBrokerForm(GenericQueryForm):
         label='Elastic Search query in JSON format',
         widget=forms.TextInput(attrs={'placeholder': '{"query":{}}'}),
     )
+    max_alerts = forms.FloatField(
+        required=False,
+        label='Maximum number of alerts to fetch',
+        widget=forms.TextInput(attrs={'placeholder': 'Max Alerts'}),
+        min_value=0.0,
+        initial=20
+    )
 
     # cone_search = ConeSearchField()
     # api_search_tags = forms.MultipleChoiceField(choices=get_tag_choices)
@@ -220,6 +227,10 @@ class ANTARESBrokerForm(GenericQueryForm):
             Fieldset(
                 'View Tags',
                 'tag'
+            ),
+            Fieldset(
+                'Max Alerts',
+                'max_alerts'
             ),
             HTML('<hr/>'),
             HTML('<p style="color:blue;font-size:30px">Advanced query</p>'),
@@ -318,6 +329,7 @@ class ANTARESBroker(GenericBroker):
         mag_max = parameters.get('mag__max')
         elsquery = parameters.get('esquery')
         ztfid = parameters.get('ztfid')
+        max_alerts = parameters.get('max_alerts', 20)
         if ztfid:
             query = {
                 "query": {
@@ -384,7 +396,7 @@ class ANTARESBroker(GenericBroker):
 #        if ztfid:
 #            loci = get_by_ztf_object_id(ztfid)
         alerts = []
-        while len(alerts) < 20:
+        while len(alerts) < max_alerts:
             try:
                 locus = next(loci)
             except (marshmallow.exceptions.ValidationError, StopIteration):

@@ -27,10 +27,17 @@ class TestANTARESBrokerClass(TestCase):
         # NOTE: if .side_effect is going to return a list, it needs a function that returns a list
         mock_client.search.search.side_effect = lambda loci: iter(self.loci)
         expected_alert = ANTARESBroker.alert_to_dict(self.locus)
-        alerts = ANTARESBroker().fetch_alerts({'tag': [self.tag]})
+        alerts = ANTARESBroker().fetch_alerts({'tag': [self.tag], 'max_alerts': 3})
 
         # TODO: compare iterator length with len(self.loci)
         self.assertEqual(next(alerts), expected_alert)
+
+    @mock.patch('tom_antares.antares.antares_client')
+    def test_fetch_alerts_max_alerts(self, mock_client):
+        """Tests that the max_alerts parameter actually affects the length of the alert stream"""
+        mock_client.search.search.side_effect = lambda loci: iter(self.loci)
+        alerts = ANTARESBroker().fetch_alerts({'max_alerts': 4})
+        self.assertEqual(len(list(alerts)), 4)
 
     def test_to_target_with_horizons_targetname(self):
         """
