@@ -135,7 +135,7 @@ class ANTARESBrokerForm(GenericQueryForm):
         label='Maximum number of alerts to fetch',
         widget=forms.TextInput(attrs={'placeholder': 'Max Alerts'}),
         min_value=0.0,
-        initial=50
+        initial=20
     )
 
     # cone_search = ConeSearchField()
@@ -329,7 +329,7 @@ class ANTARESBroker(GenericBroker):
         mag_max = parameters.get('mag__max')
         elsquery = parameters.get('esquery')
         ztfid = parameters.get('ztfid')
-        max_alerts = parameters.get('max_alerts')
+        max_alerts = parameters.get('max_alerts', 20)
         if ztfid:
             query = {
                 "query": {
