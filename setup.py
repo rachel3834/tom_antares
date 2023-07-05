@@ -28,8 +28,8 @@ setup(
     use_scm_version=True,  # use_scm_version and setup_requires setuptools_scm are required for automated releases
     setup_requires=['setuptools_scm', 'wheel'],
     install_requires=[
-        'tomtoolkit>=2.12,<2.14',
-        'antares-client~=1.2',
+        'tomtoolkit>=2.12,<3.0',
+        'antares-client>=1.2,<2.0',
         'elasticsearch-dsl>=7.3,<7.5'
     ],
     extras_require={
