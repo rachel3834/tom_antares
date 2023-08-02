@@ -14,11 +14,10 @@ Install the module into your TOM environment:
 
     pip install tom-antares
 
-Add `tom_antares.antares.AntaresBroker` to the `TOM_ALERT_CLASSES` in your TOM's
+Add `tom_antares.antares.ANTARESBroker` to the `TOM_ALERT_CLASSES` in your TOM's
 `settings.py`:
 
     TOM_ALERT_CLASSES = [
-        'tom_alerts.brokers.mars.MARSBroker',
         ...
         'tom_antares.antares.ANTARESBroker'
     ]
