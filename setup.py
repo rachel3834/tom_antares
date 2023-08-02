@@ -33,7 +33,7 @@ setup(
         'elasticsearch-dsl>=7.3,<7.5'
     ],
     extras_require={
-        'test': ['factory_boy>=3.1,<3.3']
+        'test': ['factory_boy>=3.1,<3.4']
     },
     include_package_data=True,
 )
