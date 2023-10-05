@@ -2,7 +2,6 @@ import logging
 
 import antares_client
 import marshmallow
-import requests
 from antares_client.search import get_available_tags, get_by_ztf_object_id
 from astropy.time import Time, TimezoneInfo
 from crispy_forms.layout import HTML, Div, Fieldset, Layout
@@ -141,7 +140,7 @@ class ANTARESBrokerForm(GenericQueryForm):
             HTML(
                 '''
                 <p>
-                Users can query objects in the ANTARES database using one of the following 
+                Users can query objects in the ANTARES database using one of the following
                 three methods: 1. an object ID by ZTF, 2. a simple query form with constraints
                 of object brightness, position, and associated tag, 3. an advanced query with
                 Elastic Search syntax.
