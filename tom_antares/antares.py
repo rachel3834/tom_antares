@@ -400,8 +400,8 @@ class ANTARESBroker(GenericBroker):
             alerts.append(self.alert_to_dict(locus))
         return iter(alerts)
 
-    def fetch_alert(self, id):
-        alert = get_by_ztf_object_id(id)
+    def fetch_alert(self, id_):
+        alert = get_by_ztf_object_id(id_)
         return alert
 
     # TODO: This function
@@ -426,7 +426,7 @@ class ANTARESBroker(GenericBroker):
         return target, [], aliases
 
     def to_generic_alert(self, alert):
-        url = f'{ANTARES_BASE_URL}/loci/{alert['locus_id']}'
+        url = f'{ANTARES_BASE_URL}/loci/{alert["locus_id"]}'
         timestamp = Time(
             alert['properties'].get('newest_alert_observation_time'),
             format='mjd',
