@@ -119,7 +119,7 @@ class ANTARESBrokerForm(GenericQueryForm):
     esquery = forms.JSONField(
         required=False,
         label='Elastic Search query in JSON format',
-        widget=forms.Textarea(attrs={'placeholder': '{'query':{}}'}),
+        widget=forms.Textarea(attrs={'placeholder': '{"query":{}}'}),
     )
     max_alerts = forms.FloatField(
         label='Maximum number of alerts to fetch',
