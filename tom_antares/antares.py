@@ -148,10 +148,10 @@ class ANTARESBrokerForm(GenericQueryForm):
             '''
             ),
             HTML('<hr/>'),
-            HTML('<p style="color:blue;font-size:30px">Query by object name</p>'),
+            HTML('<h3>Query by object name</h3>'),
             Fieldset('ZTF object ID', 'ztfid'),
             HTML('<hr/>'),
-            HTML('<p style="color:blue;font-size:30px">Simple query form</p>'),
+            HTML('<h3>Simple query form</h3>'),
             Fieldset(
                 'Alert timing',
                 Div(
@@ -206,7 +206,7 @@ class ANTARESBrokerForm(GenericQueryForm):
             Fieldset('View Tags', 'tag'),
             Fieldset('Max Alerts', 'max_alerts'),
             HTML('<hr/>'),
-            HTML('<p style="color:blue;font-size:30px">Advanced query</p>'),
+            HTML('<h3>Advanced query</h3>'),
             Fieldset('', 'esquery'),
             HTML(
                 '''
